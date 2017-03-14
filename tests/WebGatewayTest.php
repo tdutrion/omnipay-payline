@@ -11,6 +11,7 @@
 
 namespace Omnipay\Payline\Test;
 
+use League\Omnipay\Common\Customer;
 use Omnipay\Payline\WebGateway;
 
 /**
@@ -46,7 +47,7 @@ class WebGatewayTest extends GatewayTestCase
             'paymentMode' => 'NX',
             'paymentCycle' => 40,
             'paymentLeft' => 3,
-            'card' => $this->getValidCard(),
+            'card' => $this->getValidCard() + ['customer' => new Customer($this->getShippingCustomer())],
             'items' => array(
                 array(
                     'name' => 'reference1',

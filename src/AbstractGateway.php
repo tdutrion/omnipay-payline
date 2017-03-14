@@ -11,8 +11,9 @@
 
 namespace Omnipay\Payline;
 
-use Symfony\Component\HttpFoundation\Request as HttpRequest;
-use Omnipay\Common\AbstractGateway as OmnipayAbstractGateway;
+use GuzzleHttp\Psr7\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface as HttpRequest;
+use League\Omnipay\Common\AbstractGateway as OmnipayAbstractGateway;
 
 /**
  * AbstractGateway.
@@ -208,10 +209,7 @@ abstract class AbstractGateway extends OmnipayAbstractGateway
     protected function createRequest($class, array $parameters)
     {
         $this->httpClient = $this->httpClient ?: $this->getDefaultHttpClient();
-        $this->httpRequest = $this->httpRequest ?: $this->getDefaultHttpRequest();
-
-        $obj = new $class($this->httpClient, $this->httpRequest);
-
-        return $obj->initialize(array_replace($this->getParameters(), $parameters));
+        $this->httpRequest = $this->httpRequest ?: ServerRequest::fromGlobals();
+        return parent::createRequest($class, $parameters);
     }
 }

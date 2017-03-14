@@ -11,6 +11,7 @@
 
 namespace Omnipay\Payline\Test;
 
+use League\Omnipay\Common\Customer;
 use Omnipay\Payline\DirectGateway;
 
 /**
@@ -44,7 +45,7 @@ class DirectGatewayTest extends GatewayTestCase
             'amount' => '33.00',
             'currency' => 'EUR',
             'date' => new \DateTime(),
-            'card' => $this->getValidCard(),
+            'card' => $this->getValidCard() + ['customer' => new Customer($this->getShippingCustomer())],
         ))->send();
 
         $this->assertSuccessResponse($response);
@@ -60,11 +61,13 @@ class DirectGatewayTest extends GatewayTestCase
             'amount' => '33.00',
             'currency' => 'EUR',
             'date' => new \DateTime(),
+            'customer' => $this->getCustomer(),
             'card' => array(
                 'number' => '4970105609449918',
                 'expiryMonth' => '01',
                 'expiryYear' => '16',
                 'cvv' => '123',
+                'customer' => new Customer($this->getShippingCustomer())
             ),
         ))->send();
 

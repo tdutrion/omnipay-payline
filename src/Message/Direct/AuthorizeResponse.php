@@ -28,6 +28,11 @@ class AuthorizeResponse extends AbstractResponse
         return false;
     }
 
+    public function isCompleted()
+    {
+        return $this->getTransactionId() != null;
+    }
+
     /**
      * @return mixed
      */

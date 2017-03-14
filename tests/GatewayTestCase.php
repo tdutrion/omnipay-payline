@@ -16,7 +16,7 @@ namespace Omnipay\Payline\Test;
  *
  * @author Claude Khedhiri <claude@khedhiri.com>
  */
-class GatewayTestCase extends \Omnipay\Tests\GatewayTestCase
+class GatewayTestCase extends \League\Omnipay\Tests\GatewayTestCase
 {
     /**
      * @var \Omnipay\Payline\AbstractGateway

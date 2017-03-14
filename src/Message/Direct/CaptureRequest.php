@@ -31,8 +31,8 @@ class CaptureRequest extends AuthorizeRequest
         $data['transactionID'] = $this->getTransactionReference();
 
         $data['payment'] = array(
-            'amount' => $this->getAmountInteger(),
-            'currency' => $this->getCurrencyNumeric(),
+            'amount' => $this->getAmount()->getInteger(),
+            'currency' => $this->getAmount()->getCurrency()->getNumeric(),
             'action' => 201,
             'mode' => $this->getPaymentMode() ?: 'CPT',
         );

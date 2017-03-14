@@ -25,6 +25,11 @@ class AuthorizeResponse extends AbstractResponse
         return $this->isSuccessful();
     }
 
+    public function isCompleted()
+    {
+        return $this->getToken() != null;
+    }
+
     public function getRedirectUrl()
     {
         return $this->data->redirectURL;

@@ -11,8 +11,8 @@
 
 namespace Omnipay\Payline\Message;
 
-use Symfony\Component\HttpFoundation\Request as HttpRequest;
-use Omnipay\Common\Message\AbstractRequest as OmnipayAbstractRequest;
+use Psr\Http\Message\ServerRequestInterface as HttpRequest;
+use League\Omnipay\Common\Message\AbstractRequest as OmnipayAbstractRequest;
 
 /**
  * AbstractRequest.

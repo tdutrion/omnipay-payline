@@ -115,8 +115,8 @@ class AuthorizeRequest extends AbstractRequest
         $data = $this->getBaseData();
 
         $data['payment'] = array(
-            'amount' => $this->getAmountInteger(),
-            'currency' => $this->getCurrencyNumeric(),
+            'amount' => $this->getAmount()->getInteger(),
+            'currency' => $this->getAmount()->getCurrency()->getNumeric(),
             'action' => 100,
             'mode' => $this->getPaymentMode() ?: 'CPT',
         );
@@ -127,8 +127,8 @@ class AuthorizeRequest extends AbstractRequest
 
         $data['order'] = array(
             'ref' => $this->getTransactionId(),
-            'amount' => $this->getAmountInteger(),
-            'currency' => $this->getCurrencyNumeric(),
+            'amount' => $this->getAmount()->getInteger(),
+            'currency' => $this->getAmount()->getCurrency()->getNumeric(),
         );
 
         $card = $this->getCard();
@@ -140,50 +140,50 @@ class AuthorizeRequest extends AbstractRequest
         );
 
         $data['buyer'] = array(
-            'title' => $card->getTitle(),
-            'firstName' => $card->getFirstName(),
-            'lastName' => $card->getLastName(),
-            'email' => $card->getEmail(),
+            'title' => $card->getCustomer()->getTitle(),
+            'firstName' => $card->getCustomer()->getFirstName(),
+            'lastName' => $card->getCustomer()->getLastName(),
+            'email' => $card->getCustomer()->getEmail(),
             'shippingAdress' => array(
-                'title' => $card->getShippingTitle(),
-                'name' => $card->getShippingName(),
-                'firstName' => $card->getShippingFirstName(),
-                'lastName' => $card->getShippingLastName(),
-                'street1' => $card->getShippingAddress1(),
-                'street2' => $card->getShippingAddress2(),
-                'cityName' => $card->getShippingCity(),
-                'zipCode' => $card->getShippingPostcode(),
-                'state' => $card->getShippingState(),
-                'country' => $card->getShippingCountry(),
-                'phone' => $card->getShippingPhone()
+                'title' => $card->getShippingCustomer()->getTitle(),
+                'name' => $card->getShippingCustomer()->getName(),
+                'firstName' => $card->getShippingCustomer()->getFirstName(),
+                'lastName' => $card->getShippingCustomer()->getLastName(),
+                'street1' => $card->getShippingCustomer()->getAddress1(),
+                'street2' => $card->getShippingCustomer()->getAddress2(),
+                'cityName' => $card->getShippingCustomer()->getCity(),
+                'zipCode' => $card->getShippingCustomer()->getPostcode(),
+                'state' => $card->getShippingCustomer()->getState(),
+                'country' => $card->getShippingCustomer()->getCountry(),
+                'phone' => $card->getShippingCustomer()->getPhone(),
             ),
             'billingAddress' => array(
-                'title' => $card->getBillingTitle(),
-                'name' => $card->getBillingName(),
-                'firstName' => $card->getBillingFirstName(),
-                'lastName' => $card->getBillingLastName(),
-                'street1' => $card->getBillingAddress1(),
-                'street2' => $card->getBillingAddress2(),
-                'cityName' => $card->getBillingCity(),
-                'zipCode' => $card->getBillingPostcode(),
-                'state' => $card->getBillingState(),
-                'country' => $card->getBillingCountry(),
-                'phone' => $card->getBillingPhone()
+                'title' => $card->getBillingCustomer()->getTitle(),
+                'name' => $card->getBillingCustomer()->getName(),
+                'firstName' => $card->getBillingCustomer()->getFirstName(),
+                'lastName' => $card->getBillingCustomer()->getLastName(),
+                'street1' => $card->getBillingCustomer()->getAddress1(),
+                'street2' => $card->getBillingCustomer()->getAddress2(),
+                'cityName' => $card->getBillingCustomer()->getCity(),
+                'zipCode' => $card->getBillingCustomer()->getPostcode(),
+                'state' => $card->getBillingCustomer()->getState(),
+                'country' => $card->getBillingCustomer()->getCountry(),
+                'phone' => $card->getBillingCustomer()->getPhone(),
             ),
         );
         // Omnipay-common < 2.5 do not have the following methods
         if ( method_exists($card, 'getShippingPhoneExtension') ) {
             $data['buyer']['shippingAdress']['phoneType'] =
-                $card->getShippingPhoneExtension();
+                $card->getShippingCustomer()->getPhoneExtension();
             $data['buyer']['billingAddress']['phoneType'] =
-                $card->getBillingPhoneExtension();
+                $card->getBillingCustomer()->getPhoneExtension();
         }
 
         $data['order']['date'] = $this->getDate();
 
         if ($data['payment']['mode'] === 'NX') {
             $data['recurring'] = array(
-                'firstAmount' => $this->getAmountInteger() / $this->getPaymentLeft(),
+                'firstAmount' => $this->getAmount()->getInteger() / $this->getPaymentLeft(),
                 'billingCycle' => $this->getPaymentCycle(),
                 'billingLeft' => $this->getPaymentLeft(),
             );

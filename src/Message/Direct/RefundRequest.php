@@ -38,8 +38,8 @@ class RefundRequest extends AuthorizeRequest
         $data['transactionID'] = $this->getTransactionReference();
 
         $data['payment'] = array(
-            'amount' => $this->getAmountInteger(),
-            'currency' => $this->getCurrencyNumeric() ?: 978,
+            'amount' => $this->getAmount()->getInteger(),
+            'currency' => $this->getAmount()->getCurrency()->getNumeric() ?: 978,
             'action' => 421,
             'mode' => 'CPT',
         );

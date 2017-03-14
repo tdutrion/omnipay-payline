@@ -11,7 +11,8 @@
 
 namespace Omnipay\Payline\Test\Message\Direct;
 
-use Omnipay\Common\CreditCard;
+use League\Omnipay\Common\CreditCard;
+use League\Omnipay\Common\Customer;
 use Omnipay\Payline\Test\Message\MessageTestCase;
 
 /**
@@ -41,7 +42,9 @@ class CreditRequestTest extends MessageTestCase
             'amount' => '300.00',
             'currency' => 'EUR',
             'date' => $date = new \DateTime(),
-            'card' => $card = new CreditCard($this->getValidCard()),
+            'card' => $card = new CreditCard(
+                $this->getValidCard() + ['customer' => new Customer($this->getShippingCustomer())]
+            ),
         ));
 
         $data = $this->request->getData();
@@ -62,35 +65,35 @@ class CreditRequestTest extends MessageTestCase
         $this->assertEquals($card->getExpiryDate('my'), $data['card']['expirationDate']);
         $this->assertEquals($card->getCvv(), $data['card']['cvx']);
 
-        $this->assertEquals($card->getTitle(), $data['buyer']['title']);
-        $this->assertEquals($card->getFirstName(), $data['buyer']['firstName']);
-        $this->assertEquals($card->getLastName(), $data['buyer']['lastName']);
-        $this->assertEquals($card->getEmail(), $data['buyer']['email']);
+        $this->assertEquals($card->getCustomer()->getTitle(), $data['buyer']['title']);
+        $this->assertEquals($card->getCustomer()->getFirstName(), $data['buyer']['firstName']);
+        $this->assertEquals($card->getCustomer()->getLastName(), $data['buyer']['lastName']);
+        $this->assertEquals($card->getCustomer()->getEmail(), $data['buyer']['email']);
 
-        $this->assertEquals($card->getShippingTitle(), $data['buyer']['shippingAdress']['title']);
-        $this->assertEquals($card->getShippingName(), $data['buyer']['shippingAdress']['name']);
-        $this->assertEquals($card->getShippingFirstName(), $data['buyer']['shippingAdress']['firstName']);
-        $this->assertEquals($card->getShippingLastName(), $data['buyer']['shippingAdress']['lastName']);
-        $this->assertEquals($card->getShippingAddress1(), $data['buyer']['shippingAdress']['street1']);
-        $this->assertEquals($card->getShippingAddress2(), $data['buyer']['shippingAdress']['street2']);
-        $this->assertEquals($card->getShippingCity(), $data['buyer']['shippingAdress']['cityName']);
-        $this->assertEquals($card->getShippingPostcode(), $data['buyer']['shippingAdress']['zipCode']);
-        $this->assertEquals($card->getShippingState(), $data['buyer']['shippingAdress']['state']);
-        $this->assertEquals($card->getShippingCountry(), $data['buyer']['shippingAdress']['country']);
-        $this->assertEquals($card->getShippingPhone(), $data['buyer']['shippingAdress']['phone']);
-        $this->assertEquals($card->getShippingPhoneExtension(), $data['buyer']['shippingAdress']['phoneType']);
+        $this->assertEquals($card->getShippingCustomer()->getTitle(), $data['buyer']['shippingAdress']['title']);
+        $this->assertEquals($card->getShippingCustomer()->getName(), $data['buyer']['shippingAdress']['name']);
+        $this->assertEquals($card->getShippingCustomer()->getFirstName(), $data['buyer']['shippingAdress']['firstName']);
+        $this->assertEquals($card->getShippingCustomer()->getLastName(), $data['buyer']['shippingAdress']['lastName']);
+        $this->assertEquals($card->getShippingCustomer()->getAddress1(), $data['buyer']['shippingAdress']['street1']);
+        $this->assertEquals($card->getShippingCustomer()->getAddress2(), $data['buyer']['shippingAdress']['street2']);
+        $this->assertEquals($card->getShippingCustomer()->getCity(), $data['buyer']['shippingAdress']['cityName']);
+        $this->assertEquals($card->getShippingCustomer()->getPostcode(), $data['buyer']['shippingAdress']['zipCode']);
+        $this->assertEquals($card->getShippingCustomer()->getState(), $data['buyer']['shippingAdress']['state']);
+        $this->assertEquals($card->getShippingCustomer()->getCountry(), $data['buyer']['shippingAdress']['country']);
+        $this->assertEquals($card->getShippingCustomer()->getPhone(), $data['buyer']['shippingAdress']['phone']);
+        $this->assertEquals($card->getShippingCustomer()->getPhoneExtension(), $data['buyer']['shippingAdress']['phoneType']);
 
-        $this->assertEquals($card->getBillingTitle(), $data['buyer']['billingAddress']['title']);
-        $this->assertEquals($card->getBillingName(), $data['buyer']['billingAddress']['name']);
-        $this->assertEquals($card->getBillingFirstName(), $data['buyer']['billingAddress']['firstName']);
-        $this->assertEquals($card->getBillingLastName(), $data['buyer']['billingAddress']['lastName']);
-        $this->assertEquals($card->getBillingAddress1(), $data['buyer']['billingAddress']['street1']);
-        $this->assertEquals($card->getBillingAddress2(), $data['buyer']['billingAddress']['street2']);
-        $this->assertEquals($card->getBillingCity(), $data['buyer']['billingAddress']['cityName']);
-        $this->assertEquals($card->getBillingPostcode(), $data['buyer']['billingAddress']['zipCode']);
-        $this->assertEquals($card->getBillingState(), $data['buyer']['billingAddress']['state']);
-        $this->assertEquals($card->getBillingCountry(), $data['buyer']['billingAddress']['country']);
-        $this->assertEquals($card->getBillingPhone(), $data['buyer']['billingAddress']['phone']);
-        $this->assertEquals($card->getBillingPhoneExtension(), $data['buyer']['billingAddress']['phoneType']);
+        $this->assertEquals($card->getBillingCustomer()->getTitle(), $data['buyer']['billingAddress']['title']);
+        $this->assertEquals($card->getBillingCustomer()->getName(), $data['buyer']['billingAddress']['name']);
+        $this->assertEquals($card->getBillingCustomer()->getFirstName(), $data['buyer']['billingAddress']['firstName']);
+        $this->assertEquals($card->getBillingCustomer()->getLastName(), $data['buyer']['billingAddress']['lastName']);
+        $this->assertEquals($card->getBillingCustomer()->getAddress1(), $data['buyer']['billingAddress']['street1']);
+        $this->assertEquals($card->getBillingCustomer()->getAddress2(), $data['buyer']['billingAddress']['street2']);
+        $this->assertEquals($card->getBillingCustomer()->getCity(), $data['buyer']['billingAddress']['cityName']);
+        $this->assertEquals($card->getBillingCustomer()->getPostcode(), $data['buyer']['billingAddress']['zipCode']);
+        $this->assertEquals($card->getBillingCustomer()->getState(), $data['buyer']['billingAddress']['state']);
+        $this->assertEquals($card->getBillingCustomer()->getCountry(), $data['buyer']['billingAddress']['country']);
+        $this->assertEquals($card->getBillingCustomer()->getPhone(), $data['buyer']['billingAddress']['phone']);
+        $this->assertEquals($card->getBillingCustomer()->getPhoneExtension(), $data['buyer']['billingAddress']['phoneType']);
     }
 }
