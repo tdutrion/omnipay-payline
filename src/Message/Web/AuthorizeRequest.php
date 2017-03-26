@@ -115,6 +115,7 @@ class AuthorizeRequest extends AbstractRequest
             'mode' => $this->getPaymentMode() ?: 'CPT',
         );
 
+        $data['payment']['contractNumber'] = null;
         if ($this->getContractNumber()) {
             $data['payment']['contractNumber'] = $this->getContractNumber();
         }
@@ -132,39 +133,40 @@ class AuthorizeRequest extends AbstractRequest
                 'expirationDate' => $card->getExpiryDate('my'),
                 'cvx' => $card->getCvv(),
             );
-
+        }
+        if ($customer = $this->getCustomer()) {
             $data['buyer'] = array(
-                'title' => $card->getCustomer()->getTitle(),
-                'firstName' => $card->getCustomer()->getFirstName(),
-                'lastName' => $card->getCustomer()->getLastName(),
-                'email' => $card->getCustomer()->getEmail(),
+                'title' => $customer->getTitle(),
+                'firstName' => $customer->getFirstName(),
+                'lastName' => $customer->getLastName(),
+                'email' => $customer->getEmail(),
                 'shippingAdress' => array(
-                    'title' => $card->getShippingCustomer()->getTitle(),
-                    'name' => $card->getShippingCustomer()->getName(),
-                    'firstName' => $card->getShippingCustomer()->getFirstName(),
-                    'lastName' => $card->getShippingCustomer()->getLastName(),
-                    'street1' => $card->getShippingCustomer()->getAddress1(),
-                    'street2' => $card->getShippingCustomer()->getAddress2(),
-                    'cityName' => $card->getShippingCustomer()->getCity(),
-                    'zipCode' => $card->getShippingCustomer()->getPostcode(),
-                    'state' => $card->getShippingCustomer()->getState(),
-                    'country' => $card->getShippingCustomer()->getCountry(),
-                    'phone' => $card->getShippingCustomer()->getPhone(),
-                    'phoneType' => $card->getShippingCustomer()->getPhoneExtension(),
+                    'title' => $customer->getTitle(),
+                    'name' => $customer->getName(),
+                    'firstName' => $customer->getFirstName(),
+                    'lastName' => $customer->getLastName(),
+                    'street1' => $customer->getAddress1(),
+                    'street2' => $customer->getAddress2(),
+                    'cityName' => $customer->getCity(),
+                    'zipCode' => $customer->getPostcode(),
+                    'state' => $customer->getState(),
+                    'country' => $customer->getCountry(),
+                    'phone' => $customer->getPhone(),
+                    'phoneType' => $customer->getPhoneExtension(),
                 ),
                 'billingAddress' => array(
-                    'title' => $card->getBillingCustomer()->getTitle(),
-                    'name' => $card->getBillingCustomer()->getName(),
-                    'firstName' => $card->getBillingCustomer()->getFirstName(),
-                    'lastName' => $card->getBillingCustomer()->getLastName(),
-                    'street1' => $card->getBillingCustomer()->getAddress1(),
-                    'street2' => $card->getBillingCustomer()->getAddress2(),
-                    'cityName' => $card->getBillingCustomer()->getCity(),
-                    'zipCode' => $card->getBillingCustomer()->getPostcode(),
-                    'state' => $card->getBillingCustomer()->getState(),
-                    'country' => $card->getBillingCustomer()->getCountry(),
-                    'phone' => $card->getBillingCustomer()->getPhone(),
-                    'phoneType' => $card->getBillingCustomer()->getPhoneExtension(),
+                    'title' => $customer->getTitle(),
+                    'name' => $customer->getName(),
+                    'firstName' => $customer->getFirstName(),
+                    'lastName' => $customer->getLastName(),
+                    'street1' => $customer->getAddress1(),
+                    'street2' => $customer->getAddress2(),
+                    'cityName' => $customer->getCity(),
+                    'zipCode' => $customer->getPostcode(),
+                    'state' => $customer->getState(),
+                    'country' => $customer->getCountry(),
+                    'phone' => $customer->getPhone(),
+                    'phoneType' => $customer->getPhoneExtension(),
                 ),
             );
         }

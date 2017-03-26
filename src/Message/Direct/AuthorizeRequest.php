@@ -140,43 +140,43 @@ class AuthorizeRequest extends AbstractRequest
         );
 
         $data['buyer'] = array(
-            'title' => $card->getCustomer()->getTitle(),
-            'firstName' => $card->getCustomer()->getFirstName(),
-            'lastName' => $card->getCustomer()->getLastName(),
-            'email' => $card->getCustomer()->getEmail(),
+            'title' => $customer->getTitle(),
+            'firstName' => $customer->getFirstName(),
+            'lastName' => $customer->getLastName(),
+            'email' => $customer->getEmail(),
             'shippingAdress' => array(
-                'title' => $card->getShippingCustomer()->getTitle(),
-                'name' => $card->getShippingCustomer()->getName(),
-                'firstName' => $card->getShippingCustomer()->getFirstName(),
-                'lastName' => $card->getShippingCustomer()->getLastName(),
-                'street1' => $card->getShippingCustomer()->getAddress1(),
-                'street2' => $card->getShippingCustomer()->getAddress2(),
-                'cityName' => $card->getShippingCustomer()->getCity(),
-                'zipCode' => $card->getShippingCustomer()->getPostcode(),
-                'state' => $card->getShippingCustomer()->getState(),
-                'country' => $card->getShippingCustomer()->getCountry(),
-                'phone' => $card->getShippingCustomer()->getPhone(),
+                'title' => $customer->getTitle(),
+                'name' => $customer->getName(),
+                'firstName' => $customer->getFirstName(),
+                'lastName' => $customer->getLastName(),
+                'street1' => $customer->getAddress1(),
+                'street2' => $customer->getAddress2(),
+                'cityName' => $customer->getCity(),
+                'zipCode' => $customer->getPostcode(),
+                'state' => $customer->getState(),
+                'country' => $customer->getCountry(),
+                'phone' => $customer->getPhone(),
             ),
             'billingAddress' => array(
-                'title' => $card->getBillingCustomer()->getTitle(),
-                'name' => $card->getBillingCustomer()->getName(),
-                'firstName' => $card->getBillingCustomer()->getFirstName(),
-                'lastName' => $card->getBillingCustomer()->getLastName(),
-                'street1' => $card->getBillingCustomer()->getAddress1(),
-                'street2' => $card->getBillingCustomer()->getAddress2(),
-                'cityName' => $card->getBillingCustomer()->getCity(),
-                'zipCode' => $card->getBillingCustomer()->getPostcode(),
-                'state' => $card->getBillingCustomer()->getState(),
-                'country' => $card->getBillingCustomer()->getCountry(),
-                'phone' => $card->getBillingCustomer()->getPhone(),
+                'title' => $customer->getTitle(),
+                'name' => $customer->getName(),
+                'firstName' => $customer->getFirstName(),
+                'lastName' => $customer->getLastName(),
+                'street1' => $customer->getAddress1(),
+                'street2' => $customer->getAddress2(),
+                'cityName' => $customer->getCity(),
+                'zipCode' => $customer->getPostcode(),
+                'state' => $customer->getState(),
+                'country' => $customer->getCountry(),
+                'phone' => $customer->getPhone(),
             ),
         );
         // Omnipay-common < 2.5 do not have the following methods
         if ( method_exists($card, 'getShippingPhoneExtension') ) {
             $data['buyer']['shippingAdress']['phoneType'] =
-                $card->getShippingCustomer()->getPhoneExtension();
+                $customer->getPhoneExtension();
             $data['buyer']['billingAddress']['phoneType'] =
-                $card->getBillingCustomer()->getPhoneExtension();
+                $customer->getPhoneExtension();
         }
 
         $data['order']['date'] = $this->getDate();

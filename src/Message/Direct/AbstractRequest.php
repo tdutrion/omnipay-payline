@@ -20,6 +20,11 @@ use Omnipay\Payline\Message\AbstractRequest as BaseAbstractRequest;
  */
 abstract class AbstractRequest extends BaseAbstractRequest
 {
+    public function setCustomer()
+    {
+        parent::setCustomer();
+    }
+    
     /**
      * @param array $privateData
      */

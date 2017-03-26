@@ -210,6 +210,11 @@ abstract class AbstractGateway extends OmnipayAbstractGateway
     {
         $this->httpClient = $this->httpClient ?: $this->getDefaultHttpClient();
         $this->httpRequest = $this->httpRequest ?: ServerRequest::fromGlobals();
+
+        parent::createRequest($class, $parameters);
+        /* @var $client \SoapClient */
+        $client = $this->httpClient;
+        var_dump($client->__getLastRequest(),$client->__getLastResponse());exit;
         return parent::createRequest($class, $parameters);
     }
 }
