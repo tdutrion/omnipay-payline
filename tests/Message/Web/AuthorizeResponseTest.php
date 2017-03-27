@@ -12,7 +12,7 @@
 namespace Omnipay\Payline\Test\Message\Web;
 
 use Omnipay\Payline\Message\Web\AuthorizeResponse;
-use Omnipay\Tests\TestCase;
+use League\Omnipay\Tests\TestCase;
 
 /**
  * AuthorizeRequestTest.

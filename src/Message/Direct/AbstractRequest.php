@@ -57,10 +57,8 @@ abstract class AbstractRequest extends BaseAbstractRequest
      */
     protected function getBaseData()
     {
-        $data = array(
+        return [
             'privateDataList' => $this->getPrivateData(),
-        );
-
-        return $data;
+        ];
     }
 }

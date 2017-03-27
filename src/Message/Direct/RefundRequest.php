@@ -10,6 +10,7 @@
  */
 
 namespace Omnipay\Payline\Message\Direct;
+use Omnipay\Payline\Exception\ContractNumberNotProvidedException;
 
 /**
  * CaptureRequest.
@@ -30,6 +31,7 @@ class RefundRequest extends AuthorizeRequest
 
     /**
      * @return array
+     * @throws ContractNumberNotProvidedException
      */
     public function getData()
     {
@@ -38,15 +40,16 @@ class RefundRequest extends AuthorizeRequest
         $data['transactionID'] = $this->getTransactionReference();
 
         $data['payment'] = array(
-            'amount' => $this->getAmountInteger(),
-            'currency' => $this->getCurrencyNumeric() ?: 978,
+            'amount' => $this->getAmount()->getInteger(),
+            'currency' => $this->getAmount()->getCurrency()->getNumeric() ?: 978,
             'action' => 421,
             'mode' => 'CPT',
         );
 
         if ($this->getContractNumber()) {
-            $data['payment']['contractNumber'] = $this->getContractNumber();
+            throw new ContractNumberNotProvidedException();
         }
+        $data['payment']['contractNumber'] = $this->getContractNumber();
 
         return $data;
     }

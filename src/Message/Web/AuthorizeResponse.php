@@ -34,4 +34,9 @@ class AuthorizeResponse extends AbstractResponse
     {
         return $this->data->token;
     }
+
+    public function isCompleted()
+    {
+        return false;
+    }
 }

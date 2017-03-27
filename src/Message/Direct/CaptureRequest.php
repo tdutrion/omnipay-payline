@@ -10,6 +10,7 @@
  */
 
 namespace Omnipay\Payline\Message\Direct;
+use Omnipay\Payline\Exception\ContractNumberNotProvidedException;
 
 /**
  * Capture Request.
@@ -31,15 +32,16 @@ class CaptureRequest extends AuthorizeRequest
         $data['transactionID'] = $this->getTransactionReference();
 
         $data['payment'] = array(
-            'amount' => $this->getAmountInteger(),
-            'currency' => $this->getCurrencyNumeric(),
+            'amount' => $this->getAmount()->getInteger(),
+            'currency' => $this->getAmount()->getCurrency()->getNumeric(),
             'action' => 201,
             'mode' => $this->getPaymentMode() ?: 'CPT',
         );
 
-        if ($this->getContractNumber()) {
-            $data['payment']['contractNumber'] = $this->getContractNumber();
+        if (!$this->getContractNumber()) {
+            throw new ContractNumberNotProvidedException();
         }
+        $data['payment']['contractNumber'] = $this->getContractNumber();
 
         return $data;
     }

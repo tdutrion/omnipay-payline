@@ -11,6 +11,8 @@
 
 namespace Omnipay\Payline;
 
+use Omnipay\Payline\Message\Direct;
+
 /**
  * DirectGateway.
  *
@@ -33,9 +35,9 @@ class DirectGateway extends AbstractGateway
      *
      * @return \Omnipay\Payline\Message\Direct\AuthorizeRequest
      */
-    public function authorize(array $parameters = array())
+    public function authorize(array $parameters = [])
     {
-        return $this->createRequest('\Omnipay\Payline\Message\Direct\AuthorizeRequest', $parameters);
+        return $this->createRequest(Direct\AuthorizeRequest::class, $parameters);
     }
 
     /**
@@ -43,9 +45,9 @@ class DirectGateway extends AbstractGateway
      *
      * @return \Omnipay\Payline\Message\Direct\PurchaseRequest
      */
-    public function purchase(array $parameters = array())
+    public function purchase(array $parameters = [])
     {
-        return $this->createRequest('\Omnipay\Payline\Message\Direct\PurchaseRequest', $parameters);
+        return $this->createRequest(Direct\PurchaseRequest::class, $parameters);
     }
 
     /**
@@ -53,9 +55,9 @@ class DirectGateway extends AbstractGateway
      *
      * @return \Omnipay\Payline\Message\Direct\CaptureRequest
      */
-    public function capture(array $parameters = array())
+    public function capture(array $parameters = [])
     {
-        return $this->createRequest('\Omnipay\Payline\Message\Direct\CaptureRequest', $parameters);
+        return $this->createRequest(Direct\CaptureRequest::class, $parameters);
     }
 
     /**
@@ -63,9 +65,9 @@ class DirectGateway extends AbstractGateway
      *
      * @return \Omnipay\Payline\Message\Direct\RefundRequest
      */
-    public function refund(array $parameters = array())
+    public function refund(array $parameters = [])
     {
-        return $this->createRequest('\Omnipay\Payline\Message\Direct\RefundRequest', $parameters);
+        return $this->createRequest(Direct\RefundRequest::class, $parameters);
     }
 
     /**
@@ -73,8 +75,8 @@ class DirectGateway extends AbstractGateway
      *
      * @return \Omnipay\Payline\Message\Direct\CreditRequest
      */
-    public function credit(array $parameters = array())
+    public function credit(array $parameters = [])
     {
-        return $this->createRequest('\Omnipay\Payline\Message\Direct\CreditRequest', $parameters);
+        return $this->createRequest(Direct\CreditRequest::class, $parameters);
     }
 }

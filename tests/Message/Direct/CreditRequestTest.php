@@ -11,7 +11,7 @@
 
 namespace Omnipay\Payline\Test\Message\Direct;
 
-use Omnipay\Common\CreditCard;
+use League\Omnipay\Common\CreditCard;
 use Omnipay\Payline\Test\Message\MessageTestCase;
 
 /**

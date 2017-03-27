@@ -50,4 +50,9 @@ class AuthorizeResponse extends AbstractResponse
     {
         return $this->data->transaction->isDuplicated;
     }
+
+    public function isCompleted()
+    {
+        return '00000' == $this->data->result->code;
+    }
 }

@@ -39,13 +39,14 @@ class DirectGatewayTest extends GatewayTestCase
         $this->mockHttpClientMethodFromFile('doAuthorization', 'AuthorizeSuccess');
 
         /** @var \Omnipay\Payline\Message\Direct\AuthorizeResponse $response */
-        $response = $this->gateway->authorize(array(
+        $response = $this->gateway->authorize([
             'transactionId' => sprintf('ORDER_%s', rand(1, 100)),
             'amount' => '33.00',
             'currency' => 'EUR',
             'date' => new \DateTime(),
             'card' => $this->getValidCard(),
-        ))->send();
+            'customer' => $this->getCustomer(),
+        ])->send();
 
         $this->assertSuccessResponse($response);
     }
@@ -55,18 +56,19 @@ class DirectGatewayTest extends GatewayTestCase
         $this->mockHttpClientMethodFromFile('doAuthorization', 'AuthorizeFailure');
 
         /** @var \Omnipay\Payline\Message\Direct\AuthorizeResponse $response */
-        $response = $this->gateway->authorize(array(
+        $response = $this->gateway->authorize([
             'transactionId' => sprintf('ORDER_%s', rand(1, 100)),
             'amount' => '33.00',
             'currency' => 'EUR',
             'date' => new \DateTime(),
-            'card' => array(
+            'card' => [
                 'number' => '4970105609449918',
                 'expiryMonth' => '01',
                 'expiryYear' => '16',
                 'cvv' => '123',
-            ),
-        ))->send();
+            ],
+            'customer' => $this->getCustomer(),
+        ])->send();
 
         $this->assertFailedResponse($response);
     }
@@ -75,18 +77,19 @@ class DirectGatewayTest extends GatewayTestCase
     {
         $this->mockHttpClientMethodFromFile('doCapture', 'CaptureSuccess');
 
-        $response = $this->gateway->capture(array(
+        $response = $this->gateway->capture([
             'transactionReference' => '27067232451362',
             'amount' => '33.00',
             'currency' => 'EUR',
             'date' => new \DateTime(),
-            'card' => array(
+            'card' => [
                 'number' => '4970105609449918',
                 'expiryMonth' => '01',
                 'expiryYear' => '19',
                 'cvv' => '123',
-            ),
-        ))->send();
+            ],
+            'customer' => $this->getCustomer(),
+        ])->send();
 
         $this->assertSuccessResponse($response);
     }
@@ -95,18 +98,19 @@ class DirectGatewayTest extends GatewayTestCase
     {
         $this->mockHttpClientMethodFromFile('doCapture', 'CaptureFailure');
 
-        $response = $this->gateway->capture(array(
+        $response = $this->gateway->capture([
             'transactionReference' => '',
             'amount' => '33.00',
             'currency' => 'EUR',
             'date' => new \DateTime(),
-            'card' => array(
+            'card' => [
                 'number' => '4970105609449918',
                 'expiryMonth' => '01',
                 'expiryYear' => '19',
                 'cvv' => '123',
-            ),
-        ))->send();
+            ],
+            'customer' => $this->getCustomer(),
+        ])->send();
 
         $this->assertFailedResponse($response);
     }
@@ -115,11 +119,11 @@ class DirectGatewayTest extends GatewayTestCase
     {
         $this->mockHttpClientMethodFromFile('doRefund', 'RefundSuccess');
 
-        $response = $this->gateway->refund(array(
+        $response = $this->gateway->refund([
             'transactionReference' => '27067232451362',
             'amount' => '10.00',
             'currency' => 'EUR',
-        ))->send();
+        ])->send();
 
         $this->assertSuccessResponse($response);
     }
@@ -128,11 +132,11 @@ class DirectGatewayTest extends GatewayTestCase
     {
         $this->mockHttpClientMethodFromFile('doRefund', 'RefundFailure');
 
-        $response = $this->gateway->refund(array(
+        $response = $this->gateway->refund([
             'transactionReference' => '27068165254877',
             'amount' => '10.00',
             'currency' => 'EUR',
-        ))->send();
+        ])->send();
 
         $this->assertFailedResponse($response);
     }

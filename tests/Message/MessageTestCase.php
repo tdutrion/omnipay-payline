@@ -11,7 +11,7 @@
 
 namespace Omnipay\Payline\Test\Message;
 
-use Omnipay\Tests\TestCase;
+use League\Omnipay\Tests\TestCase;
 
 /**
  * MessageTestCase.

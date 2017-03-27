@@ -67,4 +67,9 @@ class CompleteAuthorizeResponse extends AbstractResponse
     {
         return $this->data->transaction->id;
     }
+
+    public function isCompleted()
+    {
+        return false;
+    }
 }

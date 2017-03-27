@@ -11,8 +11,11 @@
 
 namespace Omnipay\Payline\Message\Direct;
 
+use League\Omnipay\Common\Customer;
+use Omnipay\Payline\Exception\ContractNumberNotProvidedException;
+use Omnipay\Payline\Exception\CustomerDetailsNotProvidedException;
 use Omnipay\Payline\Message\AbstractRequest;
-use DateTime;
+use \DateTime;
 
 /**
  * AuthorizeRequest.
@@ -100,7 +103,7 @@ class AuthorizeRequest extends AbstractRequest
      */
     public function setDate($date)
     {
-        if ($date instanceof \DateTime) {
+        if ($date instanceof DateTime) {
             $date = $date->format('d/m/Y H:i');
         }
 
@@ -109,81 +112,128 @@ class AuthorizeRequest extends AbstractRequest
 
     /**
      * @return array
+     * @throws ContractNumberNotProvidedException
+     * @throws CustomerDetailsNotProvidedException
      */
     public function getData()
     {
         $data = $this->getBaseData();
 
-        $data['payment'] = array(
-            'amount' => $this->getAmountInteger(),
-            'currency' => $this->getCurrencyNumeric(),
+        if (!$this->getContractNumber()) {
+            throw new ContractNumberNotProvidedException();
+        }
+        $data['payment'] = [
+            'amount' => $this->getAmount()->getInteger(),
+            'currency' => $this->getAmount()->getCurrency()->getNumeric(),
             'action' => 100,
             'mode' => $this->getPaymentMode() ?: 'CPT',
-        );
+            'contractNumber' => $this->getContractNumber(),
+        ];
 
-        if ($this->getContractNumber()) {
-            $data['payment']['contractNumber'] = $this->getContractNumber();
-        }
-
-        $data['order'] = array(
+        $data['order'] = [
             'ref' => $this->getTransactionId(),
-            'amount' => $this->getAmountInteger(),
-            'currency' => $this->getCurrencyNumeric(),
-        );
+            'amount' => $this->getAmount()->getInteger(),
+            'currency' => $this->getAmount()->getCurrency()->getNumeric(),
+        ];
 
         $card = $this->getCard();
-        $data['card'] = array(
+        $data['card'] = [
             'number' => $card->getNumber(),
             'type' => $card->getBrand(),
             'expirationDate' => $card->getExpiryDate('my'),
             'cvx' => $card->getCvv(),
-        );
+        ];
 
-        $data['buyer'] = array(
-            'title' => $card->getTitle(),
-            'firstName' => $card->getFirstName(),
-            'lastName' => $card->getLastName(),
-            'email' => $card->getEmail(),
-            'shippingAdress' => array(
-                'title' => $card->getShippingTitle(),
-                'name' => $card->getShippingName(),
-                'firstName' => $card->getShippingFirstName(),
-                'lastName' => $card->getShippingLastName(),
-                'street1' => $card->getShippingAddress1(),
-                'street2' => $card->getShippingAddress2(),
-                'cityName' => $card->getShippingCity(),
-                'zipCode' => $card->getShippingPostcode(),
-                'state' => $card->getShippingState(),
-                'country' => $card->getShippingCountry(),
-                'phone' => $card->getShippingPhone()
-            ),
-            'billingAddress' => array(
-                'title' => $card->getBillingTitle(),
-                'name' => $card->getBillingName(),
-                'firstName' => $card->getBillingFirstName(),
-                'lastName' => $card->getBillingLastName(),
-                'street1' => $card->getBillingAddress1(),
-                'street2' => $card->getBillingAddress2(),
-                'cityName' => $card->getBillingCity(),
-                'zipCode' => $card->getBillingPostcode(),
-                'state' => $card->getBillingState(),
-                'country' => $card->getBillingCountry(),
-                'phone' => $card->getBillingPhone()
-            ),
-        );
+
+        $customerSources = [
+            [$card, 'getCustomer'],
+            [$this, 'getCustomer'],
+        ];
+        do {
+            $callable = array_shift($customerSources);
+            /* @var $customer Customer|null */
+            $customer = $callable();
+        } while (!$customer && !empty($customerSources));
+
+        if (!is_a($customer, Customer::class)) {
+            throw new CustomerDetailsNotProvidedException();
+        }
+
+        $billingCustomerSources = [
+            [$card, 'getBillingCustomer'],
+            [$card, 'getCustomer'],
+            [$this, 'getCustomer'],
+        ];
+        do {
+            $callable = array_shift($billingCustomerSources);
+            /* @var $billingCustomer Customer|null */
+            $billingCustomer = $callable();
+        } while (!$billingCustomer && !empty($billingCustomerSources));
+
+        if (!is_a($billingCustomer, Customer::class)) {
+            throw new CustomerDetailsNotProvidedException('billing');
+        }
+
+        $shippingCustomerSources = [
+            [$card, 'getShippingCustomer'],
+            [$card, 'getCustomer'],
+            [$this, 'getCustomer'],
+        ];
+        do {
+            $callable = array_shift($shippingCustomerSources);
+            /* @var $shippingCustomer Customer|null */
+            $shippingCustomer = $callable();
+        } while (!$shippingCustomer && !empty($shippingCustomerSources));
+
+        if (!is_a($shippingCustomer, Customer::class)) {
+            throw new CustomerDetailsNotProvidedException('shipping');
+        }
+
+        $data['buyer'] = [
+            'title' => $customer->getTitle(),
+            'firstName' => $customer->getFirstName(),
+            'lastName' => $customer->getLastName(),
+            'email' => $customer->getEmail(),
+            'shippingAdress' => [
+                'title' => $shippingCustomer->getTitle(),
+                'name' => $shippingCustomer->getName(),
+                'firstName' => $shippingCustomer->getFirstName(),
+                'lastName' => $shippingCustomer->getLastName(),
+                'street1' => $shippingCustomer->getAddress1(),
+                'street2' => $shippingCustomer->getAddress2(),
+                'cityName' => $shippingCustomer->getCity(),
+                'zipCode' => $shippingCustomer->getPostcode(),
+                'state' => $shippingCustomer->getState(),
+                'country' => $shippingCustomer->getCountry(),
+                'phone' => $shippingCustomer->getPhone()
+            ],
+            'billingAddress' => [
+                'title' => $billingCustomer->getTitle(),
+                'name' => $billingCustomer->getName(),
+                'firstName' => $billingCustomer->getFirstName(),
+                'lastName' => $billingCustomer->getLastName(),
+                'street1' => $billingCustomer->getAddress1(),
+                'street2' => $billingCustomer->getAddress2(),
+                'cityName' => $billingCustomer->getCity(),
+                'zipCode' => $billingCustomer->getPostcode(),
+                'state' => $billingCustomer->getState(),
+                'country' => $billingCustomer->getCountry(),
+                'phone' => $billingCustomer->getPhone()
+            ],
+        ];
         // Omnipay-common < 2.5 do not have the following methods
         if ( method_exists($card, 'getShippingPhoneExtension') ) {
             $data['buyer']['shippingAdress']['phoneType'] =
-                $card->getShippingPhoneExtension();
+                $shippingCustomer->getPhoneExtension();
             $data['buyer']['billingAddress']['phoneType'] =
-                $card->getBillingPhoneExtension();
+                $billingCustomer->getPhoneExtension();
         }
 
         $data['order']['date'] = $this->getDate();
 
         if ($data['payment']['mode'] === 'NX') {
             $data['recurring'] = array(
-                'firstAmount' => $this->getAmountInteger() / $this->getPaymentLeft(),
+                'firstAmount' => $this->getAmount()->getInteger() / $this->getPaymentLeft(),
                 'billingCycle' => $this->getPaymentCycle(),
                 'billingLeft' => $this->getPaymentLeft(),
             );

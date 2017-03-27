@@ -11,7 +11,7 @@
 
 namespace Omnipay\Payline\Message;
 
-use Omnipay\Common\Message\AbstractResponse as OmnipayAbstractResponse;
+use League\Omnipay\Common\Message\AbstractResponse as OmnipayAbstractResponse;
 
 /**
  * AbstractResponse.

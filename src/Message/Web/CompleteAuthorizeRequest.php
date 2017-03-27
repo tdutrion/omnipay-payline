@@ -30,11 +30,9 @@ class CompleteAuthorizeRequest extends AbstractRequest
 
     public function getData()
     {
-        $data = array();
-
-        $data['token'] = $this->httpRequest->get('token', $this->getToken());
-
-        return $data;
+        return [
+            'token' => $this->httpRequest->getAttribute('token', $this->getToken()),
+        ];
     }
 
     /**

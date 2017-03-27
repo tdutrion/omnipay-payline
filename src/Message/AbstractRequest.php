@@ -11,8 +11,8 @@
 
 namespace Omnipay\Payline\Message;
 
-use Symfony\Component\HttpFoundation\Request as HttpRequest;
-use Omnipay\Common\Message\AbstractRequest as OmnipayAbstractRequest;
+use Psr\Http\Message\RequestInterface as HttpRequest;
+use League\Omnipay\Common\Message\AbstractRequest as OmnipayAbstractRequest;
 
 /**
  * AbstractRequest.
@@ -176,9 +176,9 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
 
     protected function getBaseData()
     {
-        $data = array(
-            'payment' => array('contractNumber' => $this->getContractNumber()),
-        );
+        $data = [
+            'payment' => ['contractNumber' => $this->getContractNumber()],
+        ];
 
         return $data;
     }

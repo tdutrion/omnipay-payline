@@ -11,6 +11,8 @@
 
 namespace Omnipay\Payline;
 
+use Omnipay\Payline\Message\Web;
+
 /**
  * Class WebGateway.
  *
@@ -49,9 +51,9 @@ class WebGateway extends AbstractGateway
     /**
      * @return \Omnipay\Payline\Message\Web\AuthorizeRequest
      */
-    public function authorize(array $parameters = array())
+    public function authorize(array $parameters = [])
     {
-        return $this->createRequest('\Omnipay\Payline\Message\Web\AuthorizeRequest', $parameters);
+        return $this->createRequest(Web\AuthorizeRequest::class, $parameters);
     }
 
     /**
@@ -59,9 +61,9 @@ class WebGateway extends AbstractGateway
      *
      * @return \Omnipay\Payline\Message\Web\CaptureRequest
      */
-    public function capture(array $parameters = array())
+    public function capture(array $parameters = [])
     {
-        return $this->createRequest('\Omnipay\Payline\Message\Web\CaptureRequest', $parameters);
+        return $this->createRequest(Web\CaptureRequest::class, $parameters);
     }
 
     /**
@@ -69,9 +71,9 @@ class WebGateway extends AbstractGateway
      *
      * @return \Omnipay\Payline\Message\Web\CaptureRequest
      */
-    public function purchase(array $parameters = array())
+    public function purchase(array $parameters = [])
     {
-        return $this->createRequest('\Omnipay\Payline\Message\Web\CaptureRequest', $parameters);
+        return $this->createRequest(Web\CaptureRequest::class, $parameters);
     }
 
     /**
@@ -79,8 +81,8 @@ class WebGateway extends AbstractGateway
      *
      * @return \Omnipay\Payline\Message\Web\CompleteAuthorizeRequest
      */
-    public function completeAuthorize(array $parameters = array())
+    public function completeAuthorize(array $parameters = [])
     {
-        return $this->createRequest('\Omnipay\Payline\Message\Web\CompleteAuthorizeRequest', $parameters);
+        return $this->createRequest(Web\CompleteAuthorizeRequest::class, $parameters);
     }
 }

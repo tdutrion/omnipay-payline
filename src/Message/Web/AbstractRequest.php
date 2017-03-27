@@ -22,12 +22,12 @@ abstract class AbstractRequest extends BaseAbstractRequest
 {
     protected function getBaseData()
     {
-        $data = array(
-            'payment' => array('contractNumber' => $this->getContractNumber()),
+        $data = [
+            'payment' => ['contractNumber' => $this->getContractNumber()],
             'notificationURL' => $this->getReturnUrl(),
             'returnURL' => $this->getCancelUrl(),
             'cancelURL' => $this->getNotifyUrl(),
-        );
+        ];
 
         return $data;
     }

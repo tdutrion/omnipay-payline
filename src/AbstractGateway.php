@@ -11,8 +11,12 @@
 
 namespace Omnipay\Payline;
 
-use Symfony\Component\HttpFoundation\Request as HttpRequest;
-use Omnipay\Common\AbstractGateway as OmnipayAbstractGateway;
+use GuzzleHttp\Psr7\ServerRequest;
+use Omnipay\Payline\Exception\AccessKeyNotProvidedException;
+use Omnipay\Payline\Exception\Exception;
+use Omnipay\Payline\Exception\MerchantIdNotProvidedException;
+use Psr\Http\Message\RequestInterface as HttpRequest;
+use League\Omnipay\Common\AbstractGateway as OmnipayAbstractGateway;
 
 /**
  * AbstractGateway.
@@ -41,7 +45,7 @@ abstract class AbstractGateway extends OmnipayAbstractGateway
 
     public function getDefaultParameters()
     {
-        return array(
+        return [
             'merchantId' => '',
             'accessKey' => '',
             'proxyHost' => '',
@@ -50,7 +54,7 @@ abstract class AbstractGateway extends OmnipayAbstractGateway
             'proxyPassword' => '',
             'contractNumber' => '',
             'testMode' => false,
-        );
+        ];
     }
 
     /**
@@ -181,17 +185,25 @@ abstract class AbstractGateway extends OmnipayAbstractGateway
 
     /**
      * @return \SoapClient
+     * @throws AccessKeyNotProvidedException
+     * @throws MerchantIdNotProvidedException
      */
     public function getDefaultHttpClient()
     {
-        $header = array(
+        if (!$this->getMerchantId()) {
+            throw new MerchantIdNotProvidedException();
+        }
+        if (!$this->getAccessKey()) {
+            throw new AccessKeyNotProvidedException();
+        }
+        $header = [
             'Content-Type' => 'text/xml; charset=utf-8',
             'login' => $this->getMerchantId(),
             'password' => $this->getAccessKey(),
             'style' => defined(SOAP_DOCUMENT) ? SOAP_DOCUMENT : 2,
             'use' => defined(SOAP_LITERAL) ? SOAP_LITERAL : 2,
             'connection_timeout' => 5,
-        );
+        ];
 
         if (strlen($this->getProxyHost()) > 1) {
             $header['proxy_host'] = $this->getProxyHost();
@@ -208,8 +220,9 @@ abstract class AbstractGateway extends OmnipayAbstractGateway
     protected function createRequest($class, array $parameters)
     {
         $this->httpClient = $this->httpClient ?: $this->getDefaultHttpClient();
-        $this->httpRequest = $this->httpRequest ?: $this->getDefaultHttpRequest();
+        $this->httpRequest = $this->httpRequest ?: ServerRequest::fromGlobals();
 
+        /* @var $obj AbstractGateway */
         $obj = new $class($this->httpClient, $this->httpRequest);
 
         return $obj->initialize(array_replace($this->getParameters(), $parameters));
