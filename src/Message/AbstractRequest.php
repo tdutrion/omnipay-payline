@@ -170,7 +170,6 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     public function sendData($data)
     {
         $response = $this->httpClient->{$this->getPaymentMethod()}($data);
-
         return $this->createResponse($response);
     }
 
@@ -178,6 +177,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     {
         $data = [
             'payment' => ['contractNumber' => $this->getContractNumber()],
+            'bankAccountData' => [],
         ];
 
         return $data;

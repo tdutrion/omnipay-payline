@@ -118,7 +118,6 @@ class AuthorizeRequest extends AbstractRequest
     public function getData()
     {
         $data = $this->getBaseData();
-
         if (!$this->getContractNumber()) {
             throw new ContractNumberNotProvidedException();
         }
@@ -223,10 +222,8 @@ class AuthorizeRequest extends AbstractRequest
         ];
         // Omnipay-common < 2.5 do not have the following methods
         if ( method_exists($card, 'getShippingPhoneExtension') ) {
-            $data['buyer']['shippingAdress']['phoneType'] =
-                $shippingCustomer->getPhoneExtension();
-            $data['buyer']['billingAddress']['phoneType'] =
-                $billingCustomer->getPhoneExtension();
+            $data['buyer']['shippingAdress']['phoneType'] = $shippingCustomer->getPhoneExtension();
+            $data['buyer']['billingAddress']['phoneType'] = $billingCustomer->getPhoneExtension();
         }
 
         $data['order']['date'] = $this->getDate();
@@ -251,6 +248,14 @@ class AuthorizeRequest extends AbstractRequest
                 ));
             }
         }
+
+        if (!isset($data['privateDataList'])) {
+            $data['privateDataList'] = [];
+        }
+        if ($orderId = $this->getParameter('orderId')) {
+            $data['privateDataList'][] = ['key' => 'orderId', 'value' => $orderId];
+        }
+        $data['version'] = 5;
 
         return $data;
     }
